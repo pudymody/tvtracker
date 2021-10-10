@@ -10,4 +10,6 @@ import SQLite from "./stores/sqlite.js";
 
 	const data = await Provider.getSerie(id);
 	await Store.addSerie(data);
+
+	await Store.watchEpisode(3101452);
 })();

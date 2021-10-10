@@ -77,4 +77,11 @@ export default class SQLite {
 
 		return data;
 	}
+
+	watchEpisode(id){
+		return this.DB.run(
+			`INSERT INTO watches VALUES (?,strftime("%Y-%m-%dT%H:%M:%fZ", "now"))`,
+			id
+		);
+	}
 }
