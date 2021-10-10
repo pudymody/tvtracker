@@ -1,0 +1,17 @@
+{
+  "name": "@pudymody/project-tvtracker",
+  "version": "1.0.0",
+  "description": "A desktop app to track series and movies",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Federico Scodelaro <federicoscodelaro@gmail.com> (http://pudymody.github.io/)",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "got": "^11.8.2",
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2"
+  }
+}
