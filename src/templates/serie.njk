@@ -1,15 +1,15 @@
 {% extends "templates/base.njk" %}
 {% block main %}
-	<header style="--backdrop: url('/assets/{{ data.id }}/backdrop.jpg')">
-		<img src="/assets/{{ data.id }}/poster.jpg" alt="{{ data.original_name }}" class="poster"/>
+	<header style="--backdrop: url('/assets/series/{{ data.id }}/backdrop.jpg')">
+		<img src="/assets/series/{{ data.id }}/poster.jpg" alt="{{ data.original_name }}" class="poster"/>
 		<div>
-			<h1>{{ data.original_name }} ({{ data.first_aired_date }})</h1>
+			<h1>{{ data.original_name }} ({{ data.first_aired_date | year }})</h1>
 			<p>{{ data.overview }}</p>
 		</div>
 	</header>
 	{% for s in chapters %}
 		<section class="season">
-			<img src="/assets/{{ data.id }}/s{{ s[0] }}.jpg" alt="" class="poster"/>
+			<img src="/assets/series/{{ data.id }}/s{{ s[0] }}.jpg" alt="" class="poster"/>
 			<ol>
 			{% for c in s[1] %}
 				<li{% if c.watched !== null %} class="watched"{% endif %}>

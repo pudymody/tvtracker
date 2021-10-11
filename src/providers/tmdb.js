@@ -41,4 +41,21 @@ export default class TMDB {
 				return data;
 			});
 	}
+
+	getMovie(id){
+		const URL = `${TMDB_BASE}movie/${id}?api_key=${this.API_KEY}&language=en-US&append_to_response=images`;
+		return got(URL, { responseType: "json" })
+			.then( response => response.body )
+			.then( ({backdrop_path,id,imdb_id,original_title,overview,poster_path,release_date,runtime,tagline,title,vote_average}) => {
+
+				let backdrop_url = null, poster_url = null;
+				if( backdrop_path !== null ){
+					backdrop_url = `${TMDB_IMAGE_BASE}${backdrop_path}`;
+				}
+				if( poster_path !== null ){
+					poster_url = `${TMDB_IMAGE_BASE}${poster_path}`;
+				}
+				return {backdrop_path:backdrop_url,poster_path:poster_url,id,imdb_id,original_title,overview,release_date,runtime,tagline,title,vote_average};
+			})
+	}
 }

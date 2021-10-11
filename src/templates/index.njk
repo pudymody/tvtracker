@@ -3,7 +3,7 @@
 	<section>
 		<ul class="tv-grid">
 		{% for item in unfinished %}
-			<li><a href="tv/{{ item.id }}" title="{{ item.original_name }}"><img src="assets/{{ item.id }}/poster.jpg" alt="{{ item.original_name }}"><div class="progress" style="--p:{{ (item.count_watches / item.count_total * 100).toFixed(2) }}">{{ (item.count_watches / item.count_total * 100) | round(0, "floor") }}%</div></a></li>
+			<li><a href="tv/{{ item.id }}" title="{{ item.original_name }}"><img loading="lazy" src="{{ item.poster_img }}" alt="{{ item.original_name }}"><div class="progress" style="--p:{{ (item.count_watches / item.count_total * 100).toFixed(2) }}">{{ (item.count_watches / item.count_total * 100) | round(0, "floor") }}%</div></a></li>
 		{% else %}
 			<li>You are up to date</li>
 		{% endfor %}
@@ -11,8 +11,8 @@
 	</section>
 	<section>
 		<ul class="tv-grid">
-		{% for item in finished %}
-			<li><a href="tv/{{ item.id }}" title="{{ item.original_name }}"><img src="assets/{{ item.id }}/poster.jpg" alt="{{ item.original_name }}"><div class="progress" style="--p:{{ (item.count_watches / item.count_total * 100).toFixed(2) }}">{{ (item.count_watches / item.count_total * 100) | round(0, "floor") }}%</div></a></li>
+		{% for item in history %}
+			<li><a href="{{ item.href }}" title="{{ item.original_name }}"><img loading="lazy" src="{{ item.poster_img }}" alt="{{ item.original_name }}"></a></li>
 		{% else %}
 			<li>You are up to date</li>
 		{% endfor %}

@@ -4,8 +4,11 @@ import path from "path";
 import pov from "point-of-view";
 import njk from "nunjucks";
 import SQLite from "./stores/sqlite.js";
+import TMDB from "./providers/tmdb.js";
 
 (async function(){
+	const TMDB_KEY = "***REMOVED***";
+	const Provider = new TMDB(TMDB_KEY);
 	const Store = new SQLite("db.db");
 	await Store.open();
 
@@ -18,6 +21,19 @@ import SQLite from "./stores/sqlite.js";
 		options : {
 			onConfigure: (env) => {
 				env.addFilter("pad", function(s){ return String(s).padStart(2, "0"); });
+				env.addFilter("year", function(s){ return new Date(s).getFullYear(); });
+				env.addFilter("date", function(s){
+					const date = new Date(s);
+					return date.toLocaleString('es-AR', {
+						weekday: 'short', // long, short, narrow
+						day: 'numeric', // numeric, 2-digit
+						year: 'numeric', // numeric, 2-digit
+						month: 'long', // numeric, 2-digit, long, short, narrow
+						hour: 'numeric', // numeric, 2-digit
+						minute: 'numeric', // numeric, 2-digit
+						second: 'numeric', // numeric, 2-digit
+					})
+				});
 			}
 		}
 	});
@@ -30,8 +46,9 @@ import SQLite from "./stores/sqlite.js";
 	app.get('/', async (request, reply) => {
 		let finished = [];
 		let unfinished = [];
-		const rowsCount = await Store.DB.each(
-			`SELECT series.name, series.id, series.original_name, MAX(watches.watched) AS last_watched, COUNT(watches.watched) AS count_watches, COUNT(series.id) AS count_total FROM chapters
+		let movies = [];
+		const seriesQuery = await Store.DB.each(
+			`SELECT series.name, series.id, series.original_name, MAX(watches.watched) AS watched, COUNT(watches.watched) AS count_watches, COUNT(series.id) AS count_total FROM chapters
 LEFT JOIN watches ON (watches.id = chapters.id)
 INNER JOIN series ON (series.id = chapters.serie_id)
 WHERE chapters.season_number > 0
@@ -42,6 +59,8 @@ ORDER BY watches.watched DESC`,
 					throw err
 				}
 
+				row.href = `/tv/${row.id}`;
+				row.poster_img = `/assets/series/${row.id}/poster.jpg`;
 				if( row.count_watches != row.count_total ){
 					unfinished.push(row);
 				}else{
@@ -49,7 +68,21 @@ ORDER BY watches.watched DESC`,
 				}
 			}
 		)
-		reply.view('templates/index.njk', { unfinished, finished })
+		const moviesQuery = await Store.DB.each(
+			`SELECT * FROM movies ORDER BY watched DESC`,
+			(err, row) => {
+				if (err) {
+					throw err
+				}
+
+				row.href = `/movie/${row.id}`;
+				row.poster_img = `/assets/movies/${row.id}/poster.jpg`;
+				movies.push(row);
+			}
+		)
+
+		const history = finished.concat(movies).sort((a,b) => new Date(b.watched) - new Date(a.watched) );
+		reply.view('templates/index.njk', { unfinished, history })
 	})
 
 	app.get('/episode/watch/:id', async (request,reply) => {
@@ -67,7 +100,8 @@ ORDER BY watches.watched DESC`,
 	});
 
 	app.get('/tv/:id/add', async (request,reply) => {
-		const data = await Store.addSerie(request.params.id);
+		const data = await Provider.getSerie(request.params.id);
+		await Store.addSerie(data);
 		reply.redirect(`/tv/${data.id}`);
 	});
 
@@ -93,6 +127,17 @@ ORDER BY watches.watched DESC`,
 		)
 		reply.view('templates/serie.njk', { data,chapters: Object.entries(chapters).sort((a,b) => a[0] - b[0]) })
 	})
+
+	app.get('/movie/:id', async (request, reply) => {
+		const data = await Store.DB.get(`SELECT * FROM movies WHERE id = ?`, request.params.id);
+		reply.view('templates/movie.njk', { data })
+	})
+
+	app.get('/movie/:id/add', async (request,reply) => {
+		const data = await Provider.getMovie(request.params.id);
+		await Store.addMovie(data);
+		reply.redirect(`/movie/${data.id}`);
+	});
 
 	// Run the server!
 	const start = async () => {

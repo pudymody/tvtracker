@@ -1,0 +1,11 @@
+{% extends "templates/base.njk" %}
+{% block main %}
+	<header style="--backdrop: url('/assets/movies/{{ data.id }}/backdrop.jpg')">
+		<img src="/assets/movies/{{ data.id }}/poster.jpg" alt="{{ data.original_name }}" class="poster"/>
+		<div>
+			<h1>{{ data.original_title }} ({{ data.release_date | year }})</h1>
+			<p>Vista el <strong>{{ data.watched | date }}</strong></p>
+			<p>{{ data.overview }}</p>
+		</div>
+	</header>
+{% endblock %}

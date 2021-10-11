@@ -45,11 +45,11 @@ export default class SQLite {
 
 		let images = [];
 		if( data.backdrop_path !== null ){
-			const backdrop_file = path.join(ASSETS_FOLDER, String(data.id), "backdrop.jpg");
+			const backdrop_file = path.join(ASSETS_FOLDER, "series", String(data.id), "backdrop.jpg");
 			images.push(download( data.backdrop_path, backdrop_file));
 		}
 		if( data.poster_path !== null ){
-			const poster_file = path.join(ASSETS_FOLDER, String(data.id), "poster.jpg");
+			const poster_file = path.join(ASSETS_FOLDER, "series", String(data.id), "poster.jpg");
 			images.push(download( data.poster_path, poster_file));
 		}
 		await Promise.all(images);
@@ -90,5 +90,33 @@ export default class SQLite {
 			`DELETE FROM watches WHERE id = ?`,
 			id
 		);
+	}
+
+	async addMovie(data){
+		try {
+			await fs.mkdir(`assets/movies/${data.id}`);
+		}catch(e){
+			if( e.code != "EEXIST" ){
+				throw e;
+			}
+		}
+
+		let images = [];
+		if( data.backdrop_path !== null ){
+			const backdrop_file = path.join(ASSETS_FOLDER, "movies", String(data.id), "backdrop.jpg");
+			images.push(download( data.backdrop_path, backdrop_file));
+		}
+		if( data.poster_path !== null ){
+			const poster_file = path.join(ASSETS_FOLDER, "movies", String(data.id), "poster.jpg");
+			images.push(download( data.poster_path, poster_file));
+		}
+		await Promise.all(images);
+
+		await this.DB.run(
+			`INSERT OR REPLACE INTO movies VALUES (?,?,?,?,?,?,?,?,?,strftime("%Y-%m-%dT%H:%M:%fZ", "now"))`,
+			data.id,data.imdb_id,data.title,data.original_title,data.overview,data.release_date,data.runtime,data.tagline,data.vote_average
+		);
+
+		return data;
 	}
 }
