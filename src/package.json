@@ -10,7 +10,11 @@
   "author": "Federico Scodelaro <federicoscodelaro@gmail.com> (http://pudymody.github.io/)",
   "license": "GPL-3.0",
   "dependencies": {
+    "fastify": "^3.22.0",
+    "fastify-static": "^4.4.0",
     "got": "^11.8.2",
+    "nunjucks": "^3.2.3",
+    "point-of-view": "^4.15.2",
     "sqlite": "^4.0.23",
     "sqlite3": "^5.0.2"
   }

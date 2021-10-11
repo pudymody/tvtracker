@@ -84,4 +84,11 @@ export default class SQLite {
 			id
 		);
 	}
+
+	unwatchEpisode(id){
+		return this.DB.run(
+			`DELETE FROM watches WHERE id = ?`,
+			id
+		);
+	}
 }
