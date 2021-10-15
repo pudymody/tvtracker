@@ -36,7 +36,7 @@ export default class SQLite {
 
 	async addSerie(data){
 		try {
-			await fs.mkdir(`assets/${data.id}`);
+			await fs.mkdir(`assets/series/${data.id}`);
 		}catch(e){
 			if( e.code != "EEXIST" ){
 				throw e;
@@ -64,7 +64,7 @@ export default class SQLite {
 
 		for( let s of data.seasons ){
 			if( s.poster_path !== null ){
-				await download( s.poster_path, `assets/${data.id}/s${s.season_number}.jpg`);
+				await download( s.poster_path, `assets/series/${data.id}/s${s.season_number}.jpg`);
 			}
 			await stmt_season.run(s.id, s.name, s.season_number, s.overview, data.id);
 			for( let c of s.episodes ){
