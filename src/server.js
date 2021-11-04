@@ -82,7 +82,7 @@ ORDER BY watches.watched DESC`,
 		)
 
 		const history = finished.concat(movies).sort((a,b) => new Date(b.watched) - new Date(a.watched) );
-		reply.view('templates/index.njk', { unfinished, history })
+		return reply.view('templates/index.njk', { unfinished, history })
 	})
 
 	app.get('/episode/watch/:id', async (request,reply) => {
@@ -125,12 +125,12 @@ ORDER BY watches.watched DESC`,
 				chapters[row.season_number].push(row);
 			}
 		)
-		reply.view('templates/serie.njk', { data,chapters: Object.entries(chapters).sort((a,b) => a[0] - b[0]) })
+		return reply.view('templates/serie.njk', { data,chapters: Object.entries(chapters).sort((a,b) => a[0] - b[0]) })
 	})
 
 	app.get('/movie/:id', async (request, reply) => {
 		const data = await Store.DB.get(`SELECT * FROM movies WHERE id = ?`, request.params.id);
-		reply.view('templates/movie.njk', { data })
+		return reply.view('templates/movie.njk', { data })
 	})
 
 	app.get('/movie/:id/add', async (request,reply) => {
