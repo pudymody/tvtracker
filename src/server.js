@@ -105,8 +105,17 @@ ORDER BY watches.watched DESC`,
 		reply.redirect(`/tv/${data.id}`);
 	});
 
+	app.get('/search', async (request,reply) => {
+		const data = await Promise.all([Provider.searchSerie(request.query.q), Provider.searchMovie(request.query.q)]);
+		return reply.view('templates/search.njk', { data, q: request.query.q })
+	});
+
 	app.get('/tv/:id', async (request, reply) => {
-		const data = await Store.DB.get(`SELECT * FROM series WHERE id = ?`, request.params.id);
+		let data = await Store.DB.get(`SELECT * FROM series WHERE id = ?`, request.params.id);
+		if( data !== undefined ){
+			data.poster_path = `/assets/series/${data.id}/poster.jpg`;
+			data.backdrop_path = `/assets/series/${data.id}/backdrop.jpg`;
+		}
 		let chapters = {};
 		const rowsCount = await Store.DB.each(
 			`SELECT chapters.*, watches.watched FROM chapters
@@ -125,11 +134,34 @@ ORDER BY watches.watched DESC`,
 				chapters[row.season_number].push(row);
 			}
 		)
+
+		if( data === undefined ){
+			data = await Provider.getSerie(request.params.id);
+			data.isAdded = false;
+			data.first_aired_date = data.first_air_date;
+
+			data.seasons.map( s => s.episodes ).flat().forEach(function(row){
+				if( !chapters.hasOwnProperty(row.season_number) ){
+					chapters[row.season_number] = [];
+				}
+				row.watched = null;
+				chapters[row.season_number].push(row);
+			});
+		}
+
 		return reply.view('templates/serie.njk', { data,chapters: Object.entries(chapters).sort((a,b) => a[0] - b[0]) })
 	})
 
 	app.get('/movie/:id', async (request, reply) => {
-		const data = await Store.DB.get(`SELECT * FROM movies WHERE id = ?`, request.params.id);
+		let data = await Store.DB.get(`SELECT * FROM movies WHERE id = ?`, request.params.id);
+		if( data === undefined ){
+			data = await Provider.getMovie(request.params.id);
+			data.isAdded = false;
+			data.watched = null;
+		}else{
+			data.poster_path = `/assets/movies/${data.id}/poster.jpg`;
+			data.backdrop_path = `/assets/movies/${data.id}/backdrop.jpg`;
+		}
 		return reply.view('templates/movie.njk', { data })
 	})
 

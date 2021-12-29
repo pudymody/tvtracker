@@ -1,9 +1,9 @@
 {% extends "templates/base.njk" %}
 {% block main %}
-	<header style="--backdrop: url('/assets/series/{{ data.id }}/backdrop.jpg')">
-		<img src="/assets/series/{{ data.id }}/poster.jpg" alt="{{ data.original_name }}" class="poster"/>
+	<header style="--backdrop: url('{{ data.backdrop_path }}')">
+		<img src="{{ data.poster_path }}" alt="{{ data.original_name }}" class="poster"/>
 		<div>
-			<h1>{{ data.original_name }} ({{ data.first_aired_date | year }})</h1>
+			<h1>{{ data.original_name }} ({{ data.first_aired_date | year }}){% if data.isAdded === false %}<a class="add-button" href="/tv/{{data.id}}/add">Add</a>{% endif %}</h1>
 			<p>{{ data.overview }}</p>
 		</div>
 	</header>

@@ -1,10 +1,12 @@
 {% extends "templates/base.njk" %}
 {% block main %}
-	<header style="--backdrop: url('/assets/movies/{{ data.id }}/backdrop.jpg')">
-		<img src="/assets/movies/{{ data.id }}/poster.jpg" alt="{{ data.original_name }}" class="poster"/>
+	<header style="--backdrop: url('{{ data.backdrop_path }}')">
+		<img src="{{ data.poster_path }}" alt="{{ data.original_name }}" class="poster"/>
 		<div>
-			<h1>{{ data.original_title }} ({{ data.release_date | year }})</h1>
-			<p>Vista el <strong>{{ data.watched | date }}</strong></p>
+			<h1>{{ data.original_title }} ({{ data.release_date | year }}){% if data.isAdded === false %}<a class="add-button" href="/movie/{{data.id}}/add">Add</a>{% endif %}</h1>
+			{% if data.watched !== null %}
+				<p>Vista el <strong>{{ data.watched | date }}</strong></p>
+			{% endif %}
 			<p>{{ data.overview }}</p>
 		</div>
 	</header>

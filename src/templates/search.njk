@@ -1,0 +1,24 @@
+{% extends "templates/base.njk" %}
+{% block main %}
+	<h1>Results for: {{ q }}</h1>
+	<section>
+		<h2>Series</h1>
+		<ul class="tv-grid">
+		{% for item in data[0] %}
+			<li><a href="tv/{{ item.id }}" title="{{ item.original_name }}"><img loading="lazy" src="{{ item.poster_path }}" alt="{{ item.original_name }}"></a></li>
+		{% else %}
+			<li>There is no result</li>
+		{% endfor %}
+		</ul>
+	</section>
+	<section>
+		<h2>Movies</h1>
+		<ul class="tv-grid">
+		{% for item in data[1] %}
+			<li><a href="movie/{{ item.id }}" title="{{ item.original_name }}"><img loading="lazy" src="{{ item.poster_path }}" alt="{{ item.original_name }}"></a></li>
+		{% else %}
+			<li>There is no result</li>
+		{% endfor %}
+		</ul>
+	</section>
+{% endblock %}

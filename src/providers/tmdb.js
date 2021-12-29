@@ -7,6 +7,32 @@ export default class TMDB {
 		this.API_KEY = key;
 	}
 
+	searchSerie(q){
+		const URL = `${TMDB_BASE}search/tv`;
+		return got(URL, {
+			searchParams: {
+				query: q,
+				api_key: this.API_KEY,
+				language: "en-US",
+				append_to_response: "images"
+			},
+			responseType: "json"
+		})
+			.then( response => response.body )
+			.then( ({results}) => {
+				return results.map( ({backdrop_path,first_air_date,id,name,original_name,original_language,overview,poster_path,status,tagline,vote_average,seasons}) => {
+					let backdrop_url = null, poster_url = null;
+					if( backdrop_path !== null ){
+						backdrop_url = `${TMDB_IMAGE_BASE}${backdrop_path}`;
+					}
+					if( poster_path !== null ){
+						poster_url = `${TMDB_IMAGE_BASE}${poster_path}`;
+					}
+					return {backdrop_path:backdrop_url,first_air_date,id,name,original_name,original_language,overview,poster_path:poster_url,status,tagline,vote_average,seasons};
+				});
+			})
+	}
+
 	getSerie(id){
 		const URL = `${TMDB_BASE}tv/${id}?api_key=${this.API_KEY}&language=en-US&append_to_response=images`;
 		return got(URL, { responseType: "json" })
@@ -40,6 +66,32 @@ export default class TMDB {
 
 				return data;
 			});
+	}
+
+	searchMovie(q){
+		const URL = `${TMDB_BASE}search/movie`;
+		return got(URL, {
+			searchParams: {
+				query: q,
+				api_key: this.API_KEY,
+				language: "en-US",
+				append_to_response: "images"
+			},
+			responseType: "json"
+		})
+			.then( response => response.body )
+			.then( ({results}) => {
+				return results.map( ({backdrop_path,first_air_date,id,name,original_name,original_language,overview,poster_path,status,tagline,vote_average,seasons}) => {
+					let backdrop_url = null, poster_url = null;
+					if( backdrop_path !== null ){
+						backdrop_url = `${TMDB_IMAGE_BASE}${backdrop_path}`;
+					}
+					if( poster_path !== null ){
+						poster_url = `${TMDB_IMAGE_BASE}${poster_path}`;
+					}
+					return {backdrop_path:backdrop_url,first_air_date,id,name,original_name,original_language,overview,poster_path:poster_url,status,tagline,vote_average,seasons};
+				});
+			})
 	}
 
 	getMovie(id){
