@@ -7,7 +7,7 @@ import SQLite from "./stores/sqlite.js";
 import TMDB from "./providers/tmdb.js";
 
 (async function(){
-	const TMDB_KEY = "***REMOVED***";
+	const TMDB_KEY = "";
 	const Provider = new TMDB(TMDB_KEY);
 	const Store = new SQLite("db.db");
 	await Store.open();
