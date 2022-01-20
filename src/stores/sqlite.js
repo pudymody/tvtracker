@@ -31,7 +31,66 @@ export default class SQLite {
 		this.DB = await open({
 			filename: this.DB_FILE,
 			driver: sqlite3.Database
-		})
+		});
+
+		await this.DB.exec(`
+			BEGIN TRANSACTION;
+			CREATE TABLE IF NOT EXISTS "seasons" (
+				"id"	INTEGER NOT NULL UNIQUE,
+				"name"	TEXT NOT NULL,
+				"season_number"	INTEGER NOT NULL,
+				"overview"	TEXT NOT NULL,
+				"serie_id"	INTEGER NOT NULL,
+				PRIMARY KEY("id"),
+				FOREIGN KEY("serie_id") REFERENCES "series"("id") ON UPDATE CASCADE ON DELETE CASCADE
+			);
+			CREATE TABLE IF NOT EXISTS "chapters" (
+				"id"	INTEGER NOT NULL UNIQUE,
+				"episode_number"	INTEGER NOT NULL,
+				"season_number"	INTEGER NOT NULL,
+				"name"	TEXT NOT NULL,
+				"overview"	TEXT NOT NULL,
+				"air_date"	TEXT NOT NULL,
+				"vote_average"	NUMERIC NOT NULL,
+				"serie_id"	INTEGER NOT NULL,
+				"season_id"	INTEGER NOT NULL,
+				PRIMARY KEY("id"),
+				FOREIGN KEY("serie_id") REFERENCES "series"("id") ON UPDATE CASCADE ON DELETE CASCADE,
+				FOREIGN KEY("season_id") REFERENCES "seasons"("id") ON UPDATE CASCADE ON DELETE CASCADE
+			);
+			CREATE TABLE IF NOT EXISTS "series" (
+				"id"	INTEGER NOT NULL UNIQUE,
+				"name"	TEXT NOT NULL,
+				"original_name"	TEXT NOT NULL,
+				"first_aired_date"	TEXT NOT NULL,
+				"lang"	TEXT NOT NULL,
+				"overview"	TEXT NOT NULL,
+				"status"	TEXT NOT NULL,
+				"tagline"	TEXT NOT NULL,
+				"vote"	NUMERIC,
+				PRIMARY KEY("id")
+			);
+			CREATE TABLE IF NOT EXISTS "watches" (
+				"id"	INTEGER NOT NULL,
+				"watched"	TEXT NOT NULL,
+				PRIMARY KEY("id"),
+				FOREIGN KEY("id") REFERENCES "chapters"("id") ON UPDATE CASCADE ON DELETE CASCADE
+			);
+			CREATE TABLE IF NOT EXISTS "movies" (
+				"id"	INTEGER NOT NULL,
+				"imdb_id"	INTEGER UNIQUE,
+				"title"	TEXT NOT NULL,
+				"original_title"	TEXT NOT NULL,
+				"overview"	TEXT NOT NULL,
+				"release_date"	TEXT NOT NULL,
+				"runtime"	INTEGER NOT NULL,
+				"tagline"	TEXT NOT NULL,
+				"vote"	NUMERIC NOT NULL,
+				"watched"	TEXT,
+				PRIMARY KEY("id")
+			);
+			COMMIT;
+		`);
 	}
 
 	async addSerie(data){
