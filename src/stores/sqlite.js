@@ -137,6 +137,37 @@ export default class SQLite {
 		return data;
 	}
 
+	async getSerie(id){
+		let data = await this.DB.get(`SELECT * FROM series WHERE id = ?`, id);
+		if( data === undefined ){
+			return undefined;
+		}
+
+		data.poster_path = `/assets/series/${data.id}/poster.jpg`;
+		data.backdrop_path = `/assets/series/${data.id}/backdrop.jpg`;
+		let chapters = {};
+		await this.DB.each(
+			`SELECT chapters.*, watches.watched FROM chapters
+	LEFT JOIN watches ON (watches.id = chapters.id)
+	WHERE serie_id = ?
+	ORDER BY chapters.season_number DESC, chapters.episode_number ASC`,
+			id,
+			(err, row) => {
+				if (err) {
+					throw err
+				}
+
+				if( !chapters.hasOwnProperty(row.season_number) ){
+					chapters[row.season_number] = [];
+				}
+				chapters[row.season_number].push(row);
+			}
+		)
+
+		data.chapters = chapters;
+		return data;
+	}
+
 	watchEpisode(id){
 		return this.DB.run(
 			`INSERT INTO watches VALUES (?,strftime("%Y-%m-%dT%H:%M:%fZ", "now"))`,
@@ -149,6 +180,39 @@ export default class SQLite {
 			`DELETE FROM watches WHERE id = ?`,
 			id
 		);
+	}
+
+	getChapter(id){
+		return this.DB.get(`SELECT * FROM chapters WHERE id = ?`, id);
+	}
+
+	async getLastSeries(){
+		let series = [];
+		await this.DB.each(
+			`SELECT series.name, series.id, series.original_name, MAX(watches.watched) AS watched, COUNT(watches.watched) AS count_watches, COUNT(series.id) AS count_total FROM chapters
+LEFT JOIN watches ON (watches.id = chapters.id)
+INNER JOIN series ON (series.id = chapters.serie_id)
+WHERE chapters.season_number > 0
+GROUP BY series.id
+ORDER BY watches.watched DESC`,
+			(err, row) => {
+				if (err) {
+					throw err
+				}
+
+				row.href = `/tv/${row.id}`;
+				row.poster_img = `/assets/series/${row.id}/poster.jpg`;
+				if( row.count_watches != row.count_total ){
+					row.finished = false;
+				}else{
+					row.finished = true;
+				}
+
+				series.push(row);
+			}
+		);
+
+		return series;
 	}
 
 	async addMovie(data){
@@ -177,5 +241,33 @@ export default class SQLite {
 		);
 
 		return data;
+	}
+
+	async getMovie(id){
+		let data = await this.DB.get(`SELECT * FROM movies WHERE id = ?`, id);
+		if( data !== undefined ){
+			data.poster_path = `/assets/movies/${data.id}/poster.jpg`;
+			data.backdrop_path = `/assets/movies/${data.id}/backdrop.jpg`;
+		}
+
+		return data;
+	}
+
+	async getLastMovies(){
+		let movies = [];
+		await this.DB.each(
+			`SELECT * FROM movies ORDER BY watched DESC`,
+			(err, row) => {
+				if (err) {
+					throw err
+				}
+
+				row.href = `/movie/${row.id}`;
+				row.poster_img = `/assets/movies/${row.id}/poster.jpg`;
+				movies.push(row);
+			}
+		);
+
+		return movies;
 	}
 }
