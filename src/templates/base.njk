@@ -73,6 +73,8 @@
 		.poster {
 			height: var(--size-80);
 			display: block;
+			position: sticky;
+			top: 0;
 		}
 
 		header h1, header p {
@@ -87,6 +89,21 @@
 			padding: var(--size-3);
 			display: grid;
 			grid-template-columns: min-content 1fr;
+		}
+
+		@media (max-width: 768px){
+			.season {
+				grid-template-columns: 1fr;
+			}
+
+			.poster {
+				margin: 0 auto var(--size-3) auto;
+				position: initial;
+			}
+
+			header {
+				flex-wrap: wrap;
+			}
 		}
 
 		.season h1 {
