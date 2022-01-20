@@ -50,7 +50,13 @@ git clone https://github.com/pudymody/repo.git
 ```sh
 npm install
 ```
-3. Start node server
+
+3. Setup TMDB api key in *index.js* file
+```
+const TMDB_KEY = "API_KEY";
+```
+
+4. Start node server
 ```sh
 node server
 ```
