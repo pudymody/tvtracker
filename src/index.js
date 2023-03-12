@@ -120,7 +120,7 @@ import TMDB from "./providers/tmdb.js";
 	// Run the server!
 	const start = async () => {
 		try {
-			await app.listen(3000)
+			await app.listen({ host: "0.0.0.0", port: 80 })
 		} catch (err) {
 			app.log.error(err)
 			process.exit(1)
