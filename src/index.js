@@ -1,3 +1,4 @@
+import { env } from 'process';
 import fastify from "fastify";
 import fastify_static from "fastify-static";
 import path from "path";
@@ -7,7 +8,7 @@ import SQLite from "./stores/sqlite.js";
 import TMDB from "./providers/tmdb.js";
 
 (async function(){
-	const TMDB_KEY = "";
+	const TMDB_KEY = env.TMDB_KEY;
 	const Provider = new TMDB(TMDB_KEY);
 	const Store = new SQLite("db.db");
 	await Store.open();
