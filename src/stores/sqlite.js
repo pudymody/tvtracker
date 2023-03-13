@@ -21,7 +21,7 @@ async function download(url,file){
 	}
 };
 
-const ASSETS_FOLDER = "assets/";
+const ASSETS_FOLDER = "data/assets/";
 export default class SQLite {
 	constructor(db){
 		this.DB_FILE = db;

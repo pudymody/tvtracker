@@ -7,10 +7,9 @@ import njk from "nunjucks";
 import SQLite from "./stores/sqlite.js";
 import TMDB from "./providers/tmdb.js";
 
-(async function(){
 	const TMDB_KEY = env.TMDB_KEY;
 	const Provider = new TMDB(TMDB_KEY);
-	const Store = new SQLite("db.db");
+	const Store = new SQLite("data/db.db");
 	await Store.open();
 
 	// Require the framework and instantiate it
@@ -39,7 +38,7 @@ import TMDB from "./providers/tmdb.js";
 		}
 	});
 	app.register(fastify_static, {
-		root: path.resolve('assets'),
+		root: path.resolve('data/assets'),
 		prefix: "/assets/"
 	});
 
@@ -118,13 +117,5 @@ import TMDB from "./providers/tmdb.js";
 	});
 
 	// Run the server!
-	const start = async () => {
-		try {
-			await app.listen({ host: "0.0.0.0", port: 80 })
-		} catch (err) {
-			app.log.error(err)
-			process.exit(1)
-		}
-	}
-	start()
-})();
+	await app.listen({ host: "0.0.0.0", port: 8080 })
+
