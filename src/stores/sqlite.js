@@ -143,8 +143,8 @@ export default class SQLite {
 			return undefined;
 		}
 
-		data.poster_path = `/assets/series/${data.id}/poster.jpg`;
-		data.backdrop_path = `/assets/series/${data.id}/backdrop.jpg`;
+		data.poster_path = `assets/series/${data.id}/poster.jpg`;
+		data.backdrop_path = `assets/series/${data.id}/backdrop.jpg`;
 		let chapters = {};
 		await this.DB.each(
 			`SELECT chapters.*, watches.watched FROM chapters
@@ -200,8 +200,8 @@ ORDER BY watches.watched DESC`,
 					throw err
 				}
 
-				row.href = `/tv/${row.id}`;
-				row.poster_img = `/assets/series/${row.id}/poster.jpg`;
+				row.href = `tv/${row.id}`;
+				row.poster_img = `assets/series/${row.id}/poster.jpg`;
 				if( row.count_watches != row.count_total ){
 					row.finished = false;
 				}else{
@@ -246,8 +246,8 @@ ORDER BY watches.watched DESC`,
 	async getMovie(id){
 		let data = await this.DB.get(`SELECT * FROM movies WHERE id = ?`, id);
 		if( data !== undefined ){
-			data.poster_path = `/assets/movies/${data.id}/poster.jpg`;
-			data.backdrop_path = `/assets/movies/${data.id}/backdrop.jpg`;
+			data.poster_path = `assets/movies/${data.id}/poster.jpg`;
+			data.backdrop_path = `assets/movies/${data.id}/backdrop.jpg`;
 		}
 
 		return data;
@@ -262,8 +262,8 @@ ORDER BY watches.watched DESC`,
 					throw err
 				}
 
-				row.href = `/movie/${row.id}`;
-				row.poster_img = `/assets/movies/${row.id}/poster.jpg`;
+				row.href = `movie/${row.id}`;
+				row.poster_img = `assets/movies/${row.id}/poster.jpg`;
 				movies.push(row);
 			}
 		);

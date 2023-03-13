@@ -3,7 +3,7 @@
 	<header style="--backdrop: url('{{ data.backdrop_path }}')">
 		<img src="{{ data.poster_path }}" alt="{{ data.original_name }}" class="poster"/>
 		<div>
-			<h1>{{ data.original_name }} ({{ data.first_aired_date | year }}){% if data.isAdded === false %}<a class="add-button" href="/tv/{{data.id}}/add">Add</a>{% endif %}</h1>
+			<h1>{{ data.original_name }} ({{ data.first_aired_date | year }}){% if data.isAdded === false %}<a class="add-button" href="tv/{{data.id}}/add">Add</a>{% endif %}</h1>
 			<p>{{ data.overview }}</p>
 		</div>
 	</header>
@@ -13,7 +13,7 @@
 			<ol>
 			{% for c in s[1] %}
 				<li{% if c.watched !== null %} class="watched"{% endif %}>
-					<a href="/episode/{% if c.watched !== null %}un{% endif %}watch/{{ c.id }}">
+					<a href="episode/{% if c.watched !== null %}un{% endif %}watch/{{ c.id }}">
 						<p class="chapter_title">{{ c.season_number | pad }}x{{ c.episode_number | pad }} {{ c.name }}</p>
 						<p class="chapter_desc">{{ c.overview }}</p>
 					</a>
