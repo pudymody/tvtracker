@@ -117,5 +117,5 @@ import TMDB from "./providers/tmdb.js";
 	});
 
 	// Run the server!
-	await app.listen({ host: "0.0.0.0", port: 8080 })
+	await app.listen({ host: "0.0.0.0", port: 80 })
 
