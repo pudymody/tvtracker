@@ -9,7 +9,7 @@
 	</header>
 	{% for s in chapters %}
 		<section class="season">
-			<img src="/assets/series/{{ data.id }}/s{{ s[0] }}.jpg" alt="" class="poster"/>
+			<img src="assets/series/{{ data.id }}/s{{ s[0] }}.jpg" alt="" class="poster"/>
 			<ol>
 			{% for c in s[1] %}
 				<li{% if c.watched !== null %} class="watched"{% endif %}>
