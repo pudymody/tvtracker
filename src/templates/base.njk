@@ -184,18 +184,58 @@
 			background: var(--color-indigo-700);
 		}
 
+		nav ul li {
+			flex-grow: 1;
+		}
+
 		nav a {
 			color: #fff;
+			display: flex;
+			flex-direction: row;
+			gap: 0.5rem;
+			text-decoration: none;
+			align-items: center;
+			justify-content: center;
+			flex-wrap: wrap;
+		}
+
+		nav svg {
+			display: block;
+			height: 1.5rem;
+		}
+
+		nav form {
+			padding: var(--size-3);
+			background: var(--color-indigo-500);
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		body {
+			height: 100vh;
+			height: 100dvh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		main {
+			overflow-y: auto;
+			flex-grow: 1;
 		}
 	</style>
 </head>
 <body>
+	<main>
+		{% block main %}{% endblock %}
+	</main>
 	<nav>
+		<form action="search"><input type="text" name="q" {% if q !== null %}value="{{ q }}"{% endif %}placeholder="Search..."/><button>Search</button></form>
 		<ul>
-			<li><a href="">Home</a></li>
-			<li><form action="search"><input type="text" name="q" {% if q !== null %}value="{{ q }}"{% endif %}placeholder="Search..."/><button>Search</button></form></li>
+			<li><a href=""><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg> Home</a></li>
+			<li><a href="#watching"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>Watching</a></li>
+			<li><a href="#finished"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>Finished</a></li>
 		</ul>
 	</nav>
-	{% block main %}{% endblock %}
 </body>
 </html>
