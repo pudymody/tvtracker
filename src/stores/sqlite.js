@@ -95,7 +95,8 @@ export default class SQLite {
 
 	async addSerie(data){
 		try {
-			await fs.mkdir(`assets/series/${data.id}`);
+			const series_path = path.join(ASSETS_FOLDER, "series", String(data.id));
+			await fs.mkdir(series_path);
 		}catch(e){
 			if( e.code != "EEXIST" ){
 				throw e;
@@ -123,7 +124,8 @@ export default class SQLite {
 
 		for( let s of data.seasons ){
 			if( s.poster_path !== null ){
-				await download( s.poster_path, `assets/series/${data.id}/s${s.season_number}.jpg`);
+				const poster_path = path.join(ASSETS_FOLDER, "series", String(data.id), `s${s.season_number}.jpg`)
+				await download( s.poster_path, poster_path);
 			}
 			await stmt_season.run(s.id, s.name, s.season_number, s.overview, data.id);
 			for( let c of s.episodes ){
@@ -217,7 +219,8 @@ ORDER BY watches.watched DESC`,
 
 	async addMovie(data){
 		try {
-			await fs.mkdir(`assets/movies/${data.id}`);
+			const movie_path = path.join(ASSETS_FOLDER, "movies", String(data.id));
+			await fs.mkdir(movie_path);
 		}catch(e){
 			if( e.code != "EEXIST" ){
 				throw e;
