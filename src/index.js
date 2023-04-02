@@ -1,8 +1,8 @@
 import { env } from 'process';
 import fastify from "fastify";
-import fastify_static from "fastify-static";
+import fastify_static from "@fastify/static";
 import path from "path";
-import pov from "point-of-view";
+import pov from "@fastify/view";
 import njk from "nunjucks";
 import SQLite from "./stores/sqlite.js";
 import TMDB from "./providers/tmdb.js";
