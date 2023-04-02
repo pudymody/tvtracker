@@ -7,6 +7,7 @@ import njk from "nunjucks";
 import SQLite from "./stores/sqlite.js";
 import TMDB from "./providers/tmdb.js";
 
+const BASE_HREF = env.BASE_HREF || "/";
 	const TMDB_KEY = env.TMDB_KEY;
 	const Provider = new TMDB(TMDB_KEY);
 	const Store = new SQLite("data/db.db");
@@ -17,6 +18,9 @@ import TMDB from "./providers/tmdb.js";
 	app.register(pov, {
 		engine: {
 			nunjucks: njk 
+		},
+		defaultContext: {
+			BASE_HREF
 		},
 		options : {
 			onConfigure: (env) => {
@@ -58,20 +62,20 @@ import TMDB from "./providers/tmdb.js";
 		await Store.watchEpisode(request.params.id);
 		const data = await Store.getChapter(request.params.id);
 
-		reply.redirect(`/tv/${data.serie_id}`);
+		reply.redirect(`${BASE_HREF}tv/${data.serie_id}`);
 	});
 
 	app.get('/episode/unwatch/:id', async (request,reply) => {
 		await Store.unwatchEpisode(request.params.id);
 		const data = await Store.getChapter(request.params.id);
 
-		reply.redirect(`/tv/${data.serie_id}`);
+		reply.redirect(`${BASE_HREF}tv/${data.serie_id}`);
 	});
 
 	app.get('/tv/:id/add', async (request,reply) => {
 		const data = await Provider.getSerie(request.params.id);
 		await Store.addSerie(data);
-		reply.redirect(`/tv/${data.id}`);
+		reply.redirect(`${BASE_HREF}tv/${data.id}`);
 	});
 
 	app.get('/search', async (request,reply) => {
@@ -113,7 +117,7 @@ import TMDB from "./providers/tmdb.js";
 	app.get('/movie/:id/add', async (request,reply) => {
 		const data = await Provider.getMovie(request.params.id);
 		await Store.addMovie(data);
-		reply.redirect(`/movie/${data.id}`);
+		reply.redirect(`${BASE_HREF}movie/${data.id}`);
 	});
 
 	// Run the server!
